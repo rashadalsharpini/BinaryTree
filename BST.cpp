@@ -73,6 +73,7 @@ Node* BST::rInsert(Node *p, int key) {
         t->data = key;
         t->lchild = nullptr;
         t->rchild = nullptr;
+//        root=t;
         return t;
     }
 
