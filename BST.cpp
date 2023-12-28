@@ -131,9 +131,9 @@ Node* BST::rInsert(Node *p, int key) {
         return LLRotation(p);
     else if(BalanceFactor(p)==2 && BalanceFactor(p->lchild)==-1)
         return LRRotation(p);
-    else if(BalanceFactor(p)==-2 && BalanceFactor(p->lchild)==-1)
+    else if(BalanceFactor(p)==-2 && BalanceFactor(p->rchild)==-1)
         return RRRotation(p);
-    else if(BalanceFactor(p)==-2 && BalanceFactor(p->lchild)==1)
+    else if(BalanceFactor(p)==-2 && BalanceFactor(p->rchild)==1)
         return RLRotation(p);
     return p;  // key == p->data?
 
