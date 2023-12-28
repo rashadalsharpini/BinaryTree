@@ -3,17 +3,15 @@ using namespace std;
 #include "BST.h"
 int main() {
     BST bb;
-    bb.iInsert(6);
-//    bb.iInsert(5);
-//    bb.iInsert(10);
-//    bb.iInsert(3);
-    bb.rInsert(bb.getRoot(),5);
-    bb.rInsert(bb.getRoot(),10);
-    bb.rInsert(bb.getRoot(),3);
-    bb.Inorder(bb.getRoot());
+    bb.root=bb.rInsert(bb.root,50);
+    cout<<endl<<bb.getRootdata()<<endl;
 
+    bb.root=bb.rInsert(bb.root,10);
+    bb.root=bb.rInsert(bb.root,20);
+    bb.Inorder(bb.root);
+    cout<<endl<<bb.getRootdata()<<endl;
 
+    cout << "\n\n\nHello, World!" << endl;
 
-    cout << "Hello, World!" << endl;
     return 0;
 }

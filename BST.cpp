@@ -41,7 +41,15 @@ void BST::iInsert(int key) {
     } else {
         r->rchild = p;
     }
-
+    p->height= NodeHeight(p);
+//    if(BalanceFactor(p)==2 && BalanceFactor(p->lchild)==1)
+//        return LLRotation(p);
+//    else if(BalanceFactor(p)==2 && BalanceFactor(p->lchild)==-1)
+//        return LRRotation(p);
+//    else if(BalanceFactor(p)==-2 && BalanceFactor(p->lchild)==-1)
+//        return RRRotation(p);
+//    else if(BalanceFactor(p)==-2 && BalanceFactor(p->lchild)==1)
+//        return RLRotation(p);
 }
 
 void BST::Inorder(Node* p) {
@@ -49,6 +57,40 @@ void BST::Inorder(Node* p) {
         Inorder(p->lchild);
         cout << p->data << ", " << flush;
         Inorder(p->rchild);
+    }
+}
+
+void BST::Postorder(Node *p) {
+    if (p){
+        Postorder(p->lchild);
+        Postorder(p->rchild);
+        cout << p->data << ", " << flush;
+    }
+}
+
+void BST::Preorder(Node *p) {
+    if(p){
+        cout<<p->data<<", " << flush;
+        Preorder(p->lchild);
+        Preorder(p->rchild);
+    }
+}
+
+void BST::Levelorder(Node *p) {
+    queue<Node*> q;
+    cout<<root->data<<", "<<flush;
+    q.emplace(root);
+    while(!q.empty()){
+        p=q.front();
+        q.pop();
+        if(p->lchild){
+            cout<<p->lchild->data<<", "<<flush;
+            q.emplace(p->lchild);
+        }
+        if(p->rchild){
+            cout<<p->rchild->data<<", "<<flush;
+            q.emplace(p->rchild);
+        }
     }
 }
 
@@ -73,6 +115,7 @@ Node* BST::rInsert(Node *p, int key) {
         t->data = key;
         t->lchild = nullptr;
         t->rchild = nullptr;
+        t->height=1;
 //        root=t;
         return t;
     }
@@ -82,7 +125,18 @@ Node* BST::rInsert(Node *p, int key) {
     } else if (key > p->data){
         p->rchild = rInsert(p->rchild, key);
     }
+
+    p->height= NodeHeight(p);
+    if(BalanceFactor(p)==2 && BalanceFactor(p->lchild)==1)
+        return LLRotation(p);
+    else if(BalanceFactor(p)==2 && BalanceFactor(p->lchild)==-1)
+        return LRRotation(p);
+    else if(BalanceFactor(p)==-2 && BalanceFactor(p->lchild)==-1)
+        return RRRotation(p);
+    else if(BalanceFactor(p)==-2 && BalanceFactor(p->lchild)==1)
+        return RLRotation(p);
     return p;  // key == p->data?
+
 }
 
 Node* BST::rSearch(Node *p, int key) {
@@ -143,6 +197,20 @@ int BST::Height(Node *p) {
     return x > y ? x + 1 : y + 1;
 }
 
+int BST::NodeHeight(Node *p) {
+    int hl,hr;
+    hl=p && p->lchild ? p->lchild->height:0;
+    hr=p && p->rchild ? p->rchild->height:0;
+    return hl > hr ? hl + 1 : hr + 1;
+}
+
+int BST::BalanceFactor(Node *p) {
+    int hl,hr;
+    hl=p && p->lchild ? p->lchild->height:0;
+    hr=p && p->rchild ? p->rchild->height:0;
+    return hl-hr;
+}
+
 Node* BST::InPre(Node *p) {
     while (p && p->rchild != nullptr){
         p = p->rchild;
@@ -156,3 +224,80 @@ Node* BST::InSucc(Node *p) {
     }
     return p;
 }
+
+Node *BST::LLRotation(Node *p) {
+    Node*pl=p->lchild;
+    Node*plr=pl->rchild;
+    pl->rchild=p;
+    p->lchild=plr;
+    p->height= NodeHeight(p);
+    pl->height= NodeHeight(pl);
+    if(root==p)
+        root=pl;
+    return pl;
+}
+
+Node *BST::LRRotation(Node *p) {
+    Node* pl = p->lchild;
+    Node* plr = pl->rchild;
+
+    pl->rchild = plr->lchild;
+    p->lchild = plr->rchild;
+
+    plr->lchild = pl;
+    plr->rchild = p;
+
+    // Update height
+    pl->height = NodeHeight(pl);
+    p->height = NodeHeight(p);
+    plr->height = NodeHeight(plr);
+
+    // Update root
+    if (p == root){
+        root = plr;
+    }
+    return plr;
+}
+
+Node *BST::RLRotation(Node *p) {
+    Node* pr = p->rchild;
+    Node* prl = pr->lchild;
+
+    pr->lchild = prl->rchild;
+    p->rchild = prl->lchild;
+
+    prl->rchild = pr;
+    prl->lchild = p;
+
+    // Update height
+    pr->height = NodeHeight(pr);
+    p->height = NodeHeight(p);
+    prl->height = NodeHeight(prl);
+
+    // Update root
+    if (root == p){
+        root = prl;
+    }
+    return prl;
+}
+
+Node *BST::RRRotation(Node *p) {
+    Node* pr = p->rchild;
+    Node* prl = pr->lchild;
+
+    pr->lchild = p;
+    p->rchild = prl;
+
+    // Update height
+    p->height = NodeHeight(p);
+    pr->height = NodeHeight(pr);
+
+    // Update root
+    if (root == p){
+        root = pr;
+    }
+    return pr;
+}
+
+
+
